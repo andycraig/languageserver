@@ -93,8 +93,11 @@ diagnose_file <- function(uri, content) {
     }
 
     text <- paste0(content, collapse = "\n")
-    diagnostics <- lapply(
+    diagnostics_lintr <- lapply(
         lintr::lint(text, linters = linters), diagnostic_from_lint, content = content)
+    diagnostics_types <- lapply(
+        typeChecker::type_check(text), diagnostic_from_lint, content = content)
+    diagnostics <- c(diagnostics_lintr, diagnostics_types)
     names(diagnostics) <- NULL
     diagnostics
 }
